@@ -1,42 +1,44 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.notes_body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.notes_note {
+  position: relative;
+  width: 150px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8e36fa3;
+  background-image:
+  linear-gradient(#d2d0d07e .1em, transparent .1em);
+  background-size: 100% 1.2em;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.notes_note:before {
+  content: "";
+  position: absolute;
+  bottom: 0%;
+  right: 0%;
+  width: 0px;
+  height: 0px;
+  border-radius: 5px 0 0 0;
+  border-top: 30px solid #ababab;
+  border-right: 30px solid transparent;
+  box-shadow: -5px -5px 5px rgba(101, 101, 101, 0.3);
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.notes_note:after {
+  content: "";
+  position: absolute;
+  bottom: 0%;
+  right: 0%;
+  width: 0px;
+  height: 0px;
+  border-bottom: 30px solid #ffffff; 
+  border-left: 30px solid transparent;
 }

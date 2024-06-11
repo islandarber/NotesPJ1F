@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import {axios} from 'axios';
 
 export const Notes = () => {
   const [newNotes, setNewNotes] = useState([]);
@@ -22,10 +21,20 @@ export const Notes = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <div>
-        <div>
+      <div className="notes_body">
+        <div className="notes_note">
           <p>
             Note 1
+          </p>
+        </div>
+        <div className="notes_note">
+          <p>
+            Note 2
+          </p>
+        </div>
+        <div className="notes_note">
+          <p>
+            Note 3
           </p>
         </div>
       </div>
