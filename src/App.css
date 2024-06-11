@@ -1,25 +1,40 @@
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* body {
+  background-image: url(src/assets/white-bricks-wall-texture.jpg) ;
+  background-size: cover;
+} */
+
 .notes_body {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     justify-content: center;
+    gap: 20px;
     width: 100%;
 }
 
 .notes_note {
+  display: inline-block;
   position: relative;
   width: 150px;
   height: 100px;
   margin: 10px;
   padding: 10px;
   border-radius: 5px;
-  background-color: #f8e36fa3;
+  background-color: #ffe922;
   background-image:
   linear-gradient(#d2d0d07e .1em, transparent .1em);
   background-size: 100% 1.2em;
+  
 }
 
-.notes_note:before {
+.notes_note:hover:before {
   content: "";
   position: absolute;
   bottom: 0%;
@@ -30,15 +45,18 @@
   border-top: 30px solid #ababab;
   border-right: 30px solid transparent;
   box-shadow: -5px -5px 5px rgba(101, 101, 101, 0.3);
+  transition: all 0.10s ease; /* Add slow transition */
 }
 
-.notes_note:after {
+
+.notes_note:hover:after {
   content: "";
   position: absolute;
   bottom: 0%;
   right: 0%;
   width: 0px;
   height: 0px;
-  border-bottom: 30px solid #ffffff; 
+  border-bottom: 30px solid #fffffff3; 
   border-left: 30px solid transparent;
+  transition: all 0.10s ease; /* Add slow transition */
 }
