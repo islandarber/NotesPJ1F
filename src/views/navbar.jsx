@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, NavLink} from "react-router-dom";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -7,10 +7,12 @@ export const Navbar = () => {
 
   return (
     <nav>
-      <div>
+      <div className="navbar">
         <p>Welcome Christina</p>
-        <button onClick={() => navigate("/")}>Current Notes</button>
-        <button onClick={() => navigate("/notes")}>Deleted Notes</button>
+        <NavLink to="/" className={({ isActive }) => isActive ? "activeLink" : ""}>Current Notes
+        </NavLink>
+        <NavLink to="/dnotes" className={({ isActive }) => isActive ? "activeLink" : ""}>Deleted Notes
+        </NavLink>
       </div>
     </nav>
   );

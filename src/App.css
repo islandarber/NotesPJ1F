@@ -12,11 +12,11 @@
 } */
 
 .notes_body {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
 }
 
 .notes_note {
@@ -32,6 +32,11 @@
   linear-gradient(#d2d0d07e .1em, transparent .1em);
   background-size: 100% 1.2em;
   
+}
+
+.notes_note:hover .deletebtn,
+.notes_note:hover .editbtn {
+  display: inline-block;
 }
 
 .notes_note:hover:before {
@@ -60,3 +65,140 @@
   border-left: 30px solid transparent;
   transition: all 0.10s ease; /* Add slow transition */
 }
+
+.notes_note input, textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  font-size: 0.7em;
+}
+
+.notes_note input,textarea:focus {
+  outline: none;
+}
+
+
+
+.editbtn {
+  display: none;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  left: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.deletebtn{
+  display: none;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  right: 0;
+  border: none;
+  background-color: transparent;
+  color: rgb(255, 0, 0);
+  font-size: 1.3em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.submitBTN{
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  bottom: 0;
+  left: 0;
+  border: none;
+  background-color: transparent;
+  font-size: 0.8em;
+  cursor: pointer;
+}
+
+.page {
+  display: flex;
+  gap: 20px;
+}
+
+.addBTN {
+  width: 50px;
+  height: 50px;
+  margin: 20px;
+  border: none;
+  border-radius: 50%;
+  color: #000;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.notes_note p {
+  font-size: 0.7em;
+  padding: 5px;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.deletedNotes h1{
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.colorpicker {
+  width: 150px !important;
+  height: 100px !important;
+  margin-left: 20px;
+}
+
+.container_notes{
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+
+/* NAVBAR */
+
+.navbar {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  background-color: #ffffff62;
+  gap: 20px;
+  padding: 10px;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.navbar p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1em;
+}
+
+/* Extend the provided CSS with NavLink styles */
+
+.navbar a {
+  font-family: 'Roboto', sans-serif;
+  font-style: italic;
+  font-size: 0.9em;
+  color: #000; /* Default text color */
+  text-decoration: none; /* Removes underline */
+}
+
+.navbar a:hover {
+  color: rgb(255, 0, 0); /* Same hover effect as buttons */
+}
+
+/* Active NavLink style */
+.navbar .activeLink {
+  color: #b86c6c; /* White text for active link */
+}
+
