@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 
-export const Notes = () => {
+export const Notes = (state) => {
   const [color, setColor] = useState("#ffe922");
   const [newNotes, setNewNotes] = useState([]);
   const [deletedNotes, setDeletedNotes] = useState([]);
