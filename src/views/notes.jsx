@@ -1,13 +1,29 @@
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
+import axios from "axios";
 
 export const Notes = (state) => {
   const [color, setColor] = useState("#ffe922");
   const [newNotes, setNewNotes] = useState([]);
-  const [deletedNotes, setDeletedNotes] = useState([]);
   const [add, setAdd] = useState(false);
-  // Updated state to track editing status and value
-  const [editingNote, setEditingNote] = useState({ index: -1, value: "" });
+  const [editingNote, setEditingNote] = useState({title: "", content: "" });
+  const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState(null);
+  
+
+  useEffect(() => {
+    const fetchedNotes = async () => {
+      setNewNotes([]);
+      try {
+        const response = await axios.get("http://localhost:3000/notes");
+        setNewNotes(response.data);
+        setLoading(false);
+      } catch (error) {
+        setErrors(error);
+      }
+    };
+    fetchedNotes();
+  }, []);
 
   const addbtn = () => {
     setAdd(true);
@@ -15,51 +31,84 @@ export const Notes = (state) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!e.target[0].value) {
-      alert("Please enter a note");
-      return;
+    if (e.target[0].value && e.target[1].value) {
+      if (e.target[0].value.length > 20) {
+        alert("Title is too long, please keep it under 20 characters");
+        return;
+      }
+      const newNote = {
+        title: e.target[0].value,
+        content: e.target[1].value,
+        color: color,
+      };
+      setAdd(false);
+      axios
+        .post("http://localhost:3000/notes", newNote)
+        .then((response) => {
+          setNewNotes((prevNotes) => [...prevNotes, response.data]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("Please enter a title and a note!");
     }
-    setNewNotes([...newNotes, { note: e.target[0].value, color: color }]);
-    setAdd(false);
   };
 
-  const handleDelete = (index) => {
-    const newNoteArr = [...newNotes.slice(0, index), ...newNotes.slice(index + 1)];
-    setNewNotes(newNoteArr);
-    setDeletedNotes([...deletedNotes, newNotes[index]]);
+  const handleDelete = (id) => {
+
+    axios
+      .delete(`http://localhost:3000/notes/soft/${id}`)
+      .then((response) => {
+        setNewNotes(
+          newNotes.map((note) =>
+            note._id === id ? { ...note, isDeleted: true } : note
+          )
+        );        
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    
   };
 
-  const handleClear = (index) => {
-    const newNoteArr = [...deletedNotes.slice(0, index), ...deletedNotes.slice(index + 1)];
-    setDeletedNotes(newNoteArr);
+  const handleEdit = (id) => {
+    console.log(id);
+    const note = newNotes.find((note) => note._id === id);
+    setEditingNote({
+      id: note._id,
+      title: note.title,
+      content: note.content
+    });
   };
 
-  const handleEdit = (index) => {
-    setEditingNote({ index, value: newNotes[index].note });
+  const handleUpdateNote = (id) => {
+    const updatedNote = {
+      title: editingNote.title,
+      content: editingNote.content
+    };
+
+    axios
+      .put(`http://localhost:3000/notes/${id}`, updatedNote)
+      .then((response) => {
+        console.log(response.data);
+        setNewNotes(newNotes.map((note) => (note._id === id ? response.data : note)));
+        setEditingNote("");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  const handleUpdateNote = (index, value) => {
-    const updatedNotes = [...newNotes];
-    updatedNotes[index] = { ...updatedNotes[index], note: value };
-    setNewNotes(updatedNotes);
-    // Reset editing state
-    setEditingNote({ index: -1, value: "" });
-  };
 
   const isLight = (color) => {
-    // Convert hex color to RGB
     if (color) {
       const hex = color.replace("#", "");
       const r = parseInt(hex.substr(0, 2), 16);
       const g = parseInt(hex.substr(2, 2), 16);
       const b = parseInt(hex.substr(4, 2), 16);
 
-      // Using the HSP formula to determine lightness
-      const hsp = Math.sqrt(
-        0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)
-      );
-
-      // If HSP value is greater than 127.5, the color is light
+      const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
       return hsp > 127.5;
     }
   };
@@ -72,18 +121,20 @@ export const Notes = (state) => {
       <div className="notes_body">
         {add && (
           <div className="container_notes">
-            <HexColorPicker
-              color={color}
-              onChange={setColor}
-              className="colorpicker"
-            />
+            <HexColorPicker color={color} onChange={setColor} className="colorpicker" />
             <div className="notes_note" style={{ background: color }}>
               <form onSubmit={(e) => handleSubmit(e)}>
                 <input
                   autoFocus
                   type="text"
-                  placeholder="Enter your note here"
+                  placeholder="Enter your title here"
                   style={{ color: isLight(color) ? "black" : "white" }}
+                  className="title"
+                />
+                <textarea
+                  type="text"
+                  placeholder="Enter your note here"
+                  style={{ color: isLight(color) ? "black" : "white" , width: '100%', padding: '8px', boxSizing: 'border-box', resize: 'none'  }}
                 />
                 <button type="submit" className="submitBTN">
                   ✔️
@@ -96,7 +147,7 @@ export const Notes = (state) => {
           </div>
         )}
 
-        {newNotes.map((note, index) => (
+        {newNotes && newNotes.filter((note) => !note.isDeleted).map((note, index) => (
           <div
             key={index}
             className="notes_note"
@@ -105,26 +156,39 @@ export const Notes = (state) => {
               color: isLight(note.color) ? "black" : "white",
             }}
           >
-            {editingNote.index === index ? (
-              <textarea
-                autoFocus
-                style={{ textAlign: "left", verticalAlign: "top" }}
-                value={editingNote.value}
-                onChange={(e) =>
-                  setEditingNote({ ...editingNote, value: e.target.value })
-                }
-                onBlur={() => handleUpdateNote(index, editingNote.value)}
-                onKeyDown={(e) =>
-                  e.key === "Enter" && handleUpdateNote(index, editingNote.value)
-                }
-              />
-            ) : (
+            {
+              editingNote.id === note._id ? (
+                <form
+                  style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleUpdateNote(editingNote.id);
+                  }}
+                  >
+                  <input
+                    autoFocus
+                    type="text"
+                    value={editingNote.title}
+                    onChange={(e) => setEditingNote({ ...editingNote, title: e.target.value })}
+                    style={{ width: '100%', padding: '8px', boxSizing: 'border-box', fontWeight: 'bold' }}
+                  />
+                  <textarea
+                    value={editingNote.content}
+                    onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
+                    style={{ width: '100%', padding: '8px', boxSizing: 'border-box', resize: 'none' }}
+                  />
+                  <button type="submit" className="submitBTN">✔️</button>
+                </form>
+
+              ) : (
               <>
-                <p>{note.note}</p>
-                <button onClick={() => handleDelete(index)} className="deletebtn">
+                <h4>{note.title}</h4>
+                <p className="note_date">{new Date(note.date).toLocaleString()}</p>
+                <p>{note.content}</p>
+                <button onClick={() => handleDelete(note._id)} className="deletebtn">
                   X
                 </button>
-                <button onClick={() => handleEdit(index)} className="editbtn">
+                <button onClick={() => handleEdit(note._id)} className="editbtn">
                   ✏️
                 </button>
               </>

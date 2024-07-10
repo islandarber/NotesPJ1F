@@ -11,7 +11,7 @@ export const Navbar = () => {
         <p>Welcome Christina</p>
         <NavLink to="/" className={({ isActive }) => isActive ? "activeLink" : ""}>Current Notes
         </NavLink>
-        <NavLink to="/dnotes" className={({ isActive }) => isActive ? "activeLink" : ""}>Deleted Notes
+        <NavLink to="/deleted" className={({ isActive }) => isActive ? "activeLink" : ""}>Deleted Notes
         </NavLink>
       </div>
     </nav>

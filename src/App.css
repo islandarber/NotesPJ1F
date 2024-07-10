@@ -12,6 +12,7 @@
 } */
 
 .notes_body {
+  margin: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -23,15 +24,36 @@
   display: inline-block;
   position: relative;
   width: 150px;
-  height: 100px;
+  height: auto;
+  min-height: 100px; /* Minimum height */
   margin: 10px;
   padding: 10px;
   border-radius: 5px;
   background-color: #ffe922;
-  background-image:
-  linear-gradient(#d2d0d07e .1em, transparent .1em);
+  background-image: linear-gradient(#d2d0d07e .1em, transparent .1em);
   background-size: 100% 1.2em;
-  
+}
+
+.notes_body {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around; /* Adjust as needed */
+  align-items: flex-start; /* Align items at the top */
+}
+
+.notes_note p {
+  text-align: center;
+  overflow-wrap: break-word; /* Breaks long words to prevent overflow */
+  max-width: 100%; /* Ensures the element does not exceed its container's width */
+}
+
+.note_date {
+  margin-top: 5px;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  font-size: 10px !important;
+  font-style: italic !important;
 }
 
 .notes_note:hover .deletebtn,
@@ -72,6 +94,11 @@
   border: none;
   background-color: transparent;
   font-size: 0.7em;
+}
+
+.title {
+  font-size: 0.8em !important;
+  text-align: center !important;
 }
 
 .notes_note input,textarea:focus {
