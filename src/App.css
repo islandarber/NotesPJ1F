@@ -1,4 +1,20 @@
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+
 *{
   margin: 0;
   padding: 0;
@@ -6,26 +22,22 @@
   font-family: 'Roboto', sans-serif;
 }
 
-/* body {
-  background-image: url(src/assets/white-bricks-wall-texture.jpg) ;
-  background-size: cover;
-} */
 
 .notes_body {
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 5px;
   width: 100%;
 }
 
 .notes_note {
   display: inline-block;
   position: relative;
-  width: 150px;
+  width: 200px;
   height: auto;
-  min-height: 100px; /* Minimum height */
+  min-height: 150px; /* Minimum height */
   margin: 10px;
   padding: 10px;
   border-radius: 5px;
@@ -50,7 +62,7 @@
 .note_date {
   margin-top: 5px;
   bottom: 0;
-  right: 0;
+  left: 0;
   position: absolute;
   font-size: 10px !important;
   font-style: italic !important;
@@ -147,10 +159,7 @@
   cursor: pointer;
 }
 
-.page {
-  display: flex;
-  gap: 20px;
-}
+
 
 .addBTN {
   width: 50px;

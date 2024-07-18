@@ -170,21 +170,20 @@ export const Notes = (state) => {
                     type="text"
                     value={editingNote.title}
                     onChange={(e) => setEditingNote({ ...editingNote, title: e.target.value })}
-                    style={{ width: '100%', padding: '8px', boxSizing: 'border-box', fontWeight: 'bold' }}
+                    style={{ width: '100%', padding: '8px', boxSizing: 'border-box', fontWeight: 'bold', color: isLight(note.color) ? "black" : "white" }}
                   />
                   <textarea
                     value={editingNote.content}
                     onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
-                    style={{ width: '100%', padding: '8px', boxSizing: 'border-box', resize: 'none' }}
+                    style={{ width: '100%', padding: '8px', boxSizing: 'border-box', resize: 'none',color: isLight(note.color) ? "black" : "white" }}
                   />
                   <button type="submit" className="submitBTN">✔️</button>
                 </form>
-
               ) : (
               <>
-                <h4>{note.title}</h4>
+                <p style={{fontWeight:"bold"}}>{note.title}</p>
                 <p className="note_date">{new Date(note.date).toLocaleString()}</p>
-                <p>{note.content}</p>
+                <p style={{marginBottom:"10px"}}>{note.content}</p>
                 <button onClick={() => handleDelete(note._id)} className="deletebtn">
                   X
                 </button>
