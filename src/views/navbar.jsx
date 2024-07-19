@@ -11,13 +11,13 @@ export const Navbar = () => {
         <div className="hidden md:flex space-x-4">
           <NavLink
             to="/notes"
-            className={({ isActive }) => isActive ? "activeLink text-blue-500" : ""}
+            className={({ isActive }) => isActive ? "block py-2 text-blue-500 activeLink" : "block py-2 px-2 rounded-lg hover:underline decoration-1"}
           >
             Current Notes
           </NavLink>
           <NavLink
             to="/deleted"
-            className={({ isActive }) => isActive ? "activeLink text-blue-500" : ""}
+            className={({ isActive }) => isActive ? "block py-2 text-blue-500 activeLink" : "block py-2 px-2 rounded-lg hover:underline decoration-1"}
           >
             Deleted Notes
           </NavLink>
@@ -49,14 +49,14 @@ export const Navbar = () => {
         <div className="md:hidden bg-gray-100 pb-4">
           <NavLink
             to="/notes"
-            className={({ isActive }) => isActive ? "activeLink block text-blue-500 py-2" : "block py-2 hover:bg-gray-200"}
+            className={({ isActive }) => isActive ? "block py-2 text-blue-500 activeLink" : "block py-2 hover:text-lg"}
             onClick={() => setIsOpen(false)}
           >
             Current Notes
           </NavLink>
           <NavLink
             to="/deleted"
-            className={({ isActive }) => isActive ? "activeLink block text-blue-500 py-2" : "block py-2"}
+            className={({ isActive }) => isActive ? "block py-2 text-blue-500 activeLink" : "block py-2 hover:bg-gray-200"}
             onClick={() => setIsOpen(false)}
           >
             Deleted Notes
