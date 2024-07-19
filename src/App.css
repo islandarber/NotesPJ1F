@@ -14,6 +14,11 @@ html, body, #root {
   flex: 1;
 }
 
+a.inline-flex.items-center img {
+  display: block;
+}
+
+
 
 *{
   margin: 0;
@@ -24,7 +29,6 @@ html, body, #root {
 
 
 .notes_body {
-  margin: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -49,8 +53,6 @@ html, body, #root {
 .notes_body {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around; /* Adjust as needed */
-  align-items: flex-start; /* Align items at the top */
 }
 
 .notes_note p {
@@ -160,14 +162,14 @@ html, body, #root {
 }
 
 
-
 .addBTN {
   width: 50px;
   height: 50px;
   margin: 20px;
-  border: none;
+  border: solid 1px blue;
   border-radius: 50%;
-  color: #000;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  color: blue;
   font-size: 1.5em;
   cursor: pointer;
 }
@@ -198,43 +200,13 @@ html, body, #root {
   width: 100%;
 }
 
+/* NAVBAr active link */
 
-/* NAVBAR */
-
-.navbar {
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-  width: 100px;
-  background-color: #ffffff62;
-  gap: 20px;
-  padding: 10px;
-  border: 1px solid #aaa9a9;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+.activeLink {
+  font-weight: bold;
+  color: #1d4ed8; 
 }
 
-.navbar p {
-  font-family: 'Roboto', sans-serif;
-  font-size: 1em;
-}
 
-/* Extend the provided CSS with NavLink styles */
 
-.navbar a {
-  font-family: 'Roboto', sans-serif;
-  font-style: italic;
-  font-size: 0.9em;
-  color: #000; /* Default text color */
-  text-decoration: none; /* Removes underline */
-}
-
-.navbar a:hover {
-  color: rgb(255, 0, 0); /* Same hover effect as buttons */
-}
-
-/* Active NavLink style */
-.navbar .activeLink {
-  color: #b86c6c; /* White text for active link */
-}
 
