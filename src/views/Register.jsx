@@ -1,24 +1,65 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const Register = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordStrength, setPasswordStrength] = useState(0); // Strength level from 0 to 4
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+  const [passwordStrength, setPasswordStrength] = useState(0); // Strength level from 0 to 4
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === 'password') {
+      checkPasswordStrength();
     }
-    // Handle registration logic here, e.g., call an API to register the user
-    console.log({ username, email, password });
   };
 
-  //Check the strength of the password and set the strength level from 0 to 4 based on the following criteria:
-  const checkPasswordStrength = (password) => {
+  const handleRegister = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    if (formData.password !== formData.confirmPassword) {
+      notifyError('Passwords do not match');
+      return;
+    }
+    if (formData.username === '' || formData.email === '' || formData.password === '' || formData.confirmPassword === '') {
+      notifyError('Please fill in all the required fields');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3000/users/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
+
+      console.log(response); // Check the response
+      notifySuccess('Registration successful!');
+      setTimeout(() => {
+        navigate('/login'); // Redirect after 3 seconds
+      }, 3000);
+
+    } catch (error) {
+      if (error.response) {
+        notifyError(error.response.data.message || 'Something went wrong. Please try again.');
+      } else {
+        notifyError('Something went wrong. Please try again later.');
+      }
+    }
+  };
+
+  // Check the strength of the password and set the strength level from 0 to 4 based on the following criteria:
+  const checkPasswordStrength = () => {
+    const password = formData.password;
     let strength = 0;
     if (password.length >= 8) strength++;
     if (/[a-z]/.test(password)) strength++;
@@ -29,20 +70,12 @@ export const Register = () => {
     setPasswordStrength(strength);
   };
 
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
-    checkPasswordStrength(newPassword);
-  };
-
   const getStrengthColor = () => {
     switch (passwordStrength) {
       case 0:
-        return 'bg-red-500';
       case 1:
         return 'bg-red-500';
       case 2:
-        return 'bg-yellow-500';
       case 3:
         return 'bg-yellow-500';
       case 4:
@@ -51,6 +84,19 @@ export const Register = () => {
         return 'bg-gray-300';
     }
   };
+
+  // Toast notification functions
+  const notifySuccess = (message) => toast.success(
+    <div className="flex items-center">
+      <span>{message}</span>
+    </div>
+  );
+
+  const notifyError = (message) => toast.error(
+    <div className="flex items-center">
+      <span>{message}</span>
+    </div>
+  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-200">
@@ -63,9 +109,9 @@ export const Register = () => {
             </label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter your username"
               required
@@ -77,9 +123,9 @@ export const Register = () => {
             </label>
             <input
               type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter your email"
               required
@@ -90,14 +136,24 @@ export const Register = () => {
               Password
             </label>
             <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={handlePasswordChange}
+              type={showPassword ? "text" : "password"} // Toggle input type
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter your password"
               required
             />
+            <div className="flex items-center mb-3">
+              <input
+                type="checkbox"
+                id="showPassword"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+                className="mr-2"
+              />
+              <label htmlFor="showPassword" className="text-sm text-gray-600">Show Password</label>
+            </div>
             <div className="h-2 bg-gray-300 rounded-md">
               <div className={`h-full rounded-md transition-all ease-in-out duration-300 ${getStrengthColor()}`} style={{ width: `${(passwordStrength / 5) * 100}%` }}></div>
             </div>
@@ -107,10 +163,10 @@ export const Register = () => {
               Confirm Password
             </label>
             <input
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              type={showPassword ? "text" : "password"} // Toggle input type
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Confirm your password"
               required
@@ -125,6 +181,7 @@ export const Register = () => {
             </button>
           </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );
