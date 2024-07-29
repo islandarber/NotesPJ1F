@@ -6,6 +6,8 @@ import { useAuth } from './Context/AuthContext'
 import { Navbar } from './views/navbar'
 import { Footer } from './views/Footer'
 import { Navigate } from 'react-router-dom'
+import { ResetPassword } from './views/PasswordReset'
+import {ResetPasswordForm} from './views/ResetPasswordForm'
 
 function App() {
 
@@ -24,6 +26,8 @@ function App() {
           }
           <Route path="/not-found" element={<Notfound />} />
           <Route path="*" element={<Navigate to="/not-found" replace/>} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/reset/:token" element={<ResetPasswordForm />} />
         </Routes>
       </div>
       <Footer/>

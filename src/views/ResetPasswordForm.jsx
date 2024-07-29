@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export const ResetPasswordForm = () => {
   const { token } = useParams(); // Get reset token from URL params
   const navigate = useNavigate();
+  console.log(token);
   
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,7 +21,7 @@ export const ResetPasswordForm = () => {
     }
     setLoading(true);
     try {
-      const response = await axios.post('/reset-password/confirm', { token, password });
+      const response = await axios.post('http://localhost:3000/users/reset-password/confirm', { token, password });
       toast.success(response.data.message);
       setTimeout(() => {
         navigate('/login'); // Redirect to login page after successful reset

@@ -11,14 +11,12 @@ export const ResetPassword = () => {
   // Toast notification functions
   const notifySuccess = (message) => toast.success(
     <div className="flex items-center">
-      <FaCheckCircle className="text-green-500 mr-2" />
       <span>{message}</span>
     </div>
   );
 
   const notifyError = (message) => toast.error(
     <div className="flex items-center">
-      <FaExclamationCircle className="text-red-500 mr-2" />
       <span>{message}</span>
     </div>
   );
@@ -37,9 +35,7 @@ export const ResetPassword = () => {
       setEmail(''); // Clear the email input after successful submission
     } catch (error) {
       if (error.response) {
-        notifyError(error.response.data.message || 'Something went wrong. Please try again.');
-      } else {
-        notifyError('Something went wrong. Please try again later.');
+        notifyError(error.message || 'Something went wrong. Please try again.');
       }
     }
   };
