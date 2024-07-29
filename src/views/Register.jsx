@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -98,6 +98,11 @@ export const Register = () => {
     </div>
   );
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+    navigate('/login');
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-200">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -179,6 +184,13 @@ export const Register = () => {
             >
               Register
             </button>
+            <a
+              href="#"
+              onClick={handleLogin}
+              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+            >
+              Login
+            </a>
           </div>
         </form>
         <ToastContainer />

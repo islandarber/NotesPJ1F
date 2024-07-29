@@ -1,29 +1,29 @@
 import './App.css'
-import { Notes } from './views/notes'
-import {Navbar} from './views/navbar'
-import {Routes, Route} from 'react-router-dom'	
-import { DNotes } from './views/dnotes'
-import { Home } from './views/Home'
-import {Footer} from './views/Footer'
-import { Login } from './views/Login'
-import { PasswordReset } from './views/PasswordReset'
-import { Register } from './views/Register'
+import { privateRoutes, publicRoutes } from './Routes/routes'
+import {Routes, Route} from 'react-router-dom'
+import { Notfound } from './views/Notfound'
+import { useAuth } from './Context/AuthContext'
+import { Navbar } from './views/navbar'
+import { Footer } from './views/Footer'
+import { Navigate } from 'react-router-dom'
 
 function App() {
 
-
+  const {token} = useAuth()
   return (
     <>
     <div id="root">
-      <Navbar/>
+     {token ? <Navbar/> : null}
       <div className='main-content'>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/notes" element={<Notes />} />
-          <Route path="/deleted" element={<DNotes />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/reset-password" element={<PasswordReset />} />
-          <Route path="/signup" element={<Register />} />
+          {publicRoutes.map(({path, element}) => (
+            <Route key={path} path={path} element={!token ? element : <Navigate to='/'/>} />))
+          }
+          {privateRoutes.map(({path, element}) => (
+            <Route key={path} path={path} element={token ? element : <Navigate to='/login'/>} />))
+          }
+          <Route path="/not-found" element={<Notfound />} />
+          <Route path="*" element={<Navigate to="/not-found" replace/>} />
         </Routes>
       </div>
       <Footer/>

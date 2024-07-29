@@ -50,6 +50,12 @@ a.inline-flex.items-center img {
   background-size: 100% 1.2em;
 }
 
+.pinned_note_wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+
 .notes_body {
   display: flex;
   flex-wrap: wrap;
@@ -63,6 +69,7 @@ a.inline-flex.items-center img {
 
 .note_date {
   margin-top: 5px;
+  margin-left: 2.1em;
   bottom: 0;
   left: 0;
   position: absolute;
@@ -132,6 +139,18 @@ a.inline-flex.items-center img {
   background-color: transparent;
   cursor: pointer;
 }
+
+.pinbtn{
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  bottom: 0;
+  left: 0;
+  border: none;
+  cursor: pointer;
+  font-size: 0.7em;
+}
+
 
 .deletebtn{
   display: none;

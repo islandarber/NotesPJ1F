@@ -69,7 +69,7 @@ export const DNotes = () => {
                 <button onClick={() => handleDelete(note._id)} className="deletebtn">
                   X
                 </button>
-                <button onClick={() => handleRestore(note._id)} className="editbtn">
+                <button onClick={() => handleRestore(note._id)} className="editbtn" style={{marginLeft:"10px", fontSize:"0.8em", color:"orange"}}>
                   Restore
                 </button>
               </>

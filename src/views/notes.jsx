@@ -9,66 +9,61 @@ export const Notes = () => {
   const [editingNote, setEditingNote] = useState({ title: "", content: "" });
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState(null);
+  const [pinnedNote, setPinnedNote] = useState(null);
 
   useEffect(() => {
-    const fetchedNotes = async () => {
-      setNewNotes([]);
+    const fetchNotes = async () => {
       try {
         const response = await axios.get("http://localhost:3000/notes");
         setNewNotes(response.data);
-        console.log(response.data);
       } catch (error) {
         setErrors("Failed to fetch notes. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-    fetchedNotes();
+    fetchNotes();
   }, []);
 
-  const addbtn = () => {
-    setAdd(true);
-  };
+  const addbtn = () => setAdd(true);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (e.target[0].value && e.target[1].value) {
-      if (e.target[0].value.length > 20) {
-        alert("Title is too long, please keep it under 20 characters");
-        return;
-      }
-      const newNote = {
-        title: e.target[0].value,
-        content: e.target[1].value,
-        color: color,
-      };
-      setAdd(false);
-      axios
-        .post("http://localhost:3000/notes", newNote)
-        .then((response) => {
-          setNewNotes((prevNotes) => [...prevNotes, response.data]);
-        })
-        .catch((error) => {
-          setErrors("Failed to add note. Please try again.");
-        });
-    } else {
+    const title = e.target[0].value;
+    const content = e.target[1].value;
+
+    if (!title || !content) {
       alert("Please enter a title and a note!");
+      return;
+    }
+
+    if (title.length > 20) {
+      alert("Title is too long, please keep it under 20 characters");
+      return;
+    }
+
+    const newNote = { title, content, color };
+    setAdd(false);
+
+    try {
+      const response = await axios.post("http://localhost:3000/notes", newNote);
+      setNewNotes((prevNotes) => [...prevNotes, response.data]);
+    } catch (error) {
+      setErrors("Failed to add note. Please try again.");
     }
   };
 
-  const handleDelete = (id) => {
-    axios
-      .delete(`http://localhost:3000/notes/soft/${id}`)
-      .then(() => {
-        setNewNotes(
-          newNotes.map((note) =>
-            note._id === id ? { ...note, isDeleted: true } : note
-          )
-        );
-      })
-      .catch((error) => {
-        setErrors("Failed to delete note. Please try again.");
-      });
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/notes/soft/${id}`);
+      setNewNotes((prevNotes) =>
+        prevNotes.map((note) =>
+          note._id === id ? { ...note, isDeleted: true } : note
+        )
+      );
+    } catch (error) {
+      setErrors("Failed to delete note. Please try again.");
+    }
   };
 
   const handleEdit = (id) => {
@@ -80,45 +75,51 @@ export const Notes = () => {
     });
   };
 
-  const handleUpdateNote = (id) => {
+  const handleUpdateNote = async (id) => {
     const updatedNote = {
       title: editingNote.title,
       content: editingNote.content,
     };
 
-    axios
-      .put(`http://localhost:3000/notes/${id}`, updatedNote)
-      .then((response) => {
-        setNewNotes(
-          newNotes.map((note) =>
-            note._id === id ? response.data : note
-          )
-        );
-        setEditingNote({ title: "", content: "" });
-      })
-      .catch((error) => {
-        setErrors("Failed to update note. Please try again.");
-      });
+    try {
+      const response = await axios.put(`http://localhost:3000/notes/${id}`, updatedNote);
+      setNewNotes((prevNotes) =>
+        prevNotes.map((note) => (note._id === id ? response.data : note))
+      );
+      setEditingNote({ title: "", content: "" });
+    } catch (error) {
+      setErrors("Failed to update note. Please try again.");
+    }
   };
 
   const isLight = (color) => {
-    if (color) {
-      const hex = color.replace("#", "");
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-
-      const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
-      return hsp > 127.5;
-    }
-    return false; // Default to false if color is invalid
+    const hex = color.replace("#", "");
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+    return hsp > 127.5;
   };
 
   return (
     <div>
-      <button onClick={addbtn} className="addBTN">
-        +
-      </button>
+      {pinnedNote && (
+          <div className="pinned_note_wrapper">
+            <div
+              className="notes_note"
+              style={{
+                background: pinnedNote.color,
+                color: isLight(pinnedNote.color) ? "black" : "white",
+                width: "300px",
+              }}
+            >
+              <button onClick={() => setPinnedNote(null)} className="pinbtn">📍</button>
+              <p style={{ fontWeight: "bold" }}>{pinnedNote.title}</p>
+              <p>{pinnedNote.content}</p>
+            </div>
+          </div>
+        )}
+      <button onClick={addbtn} className="addBTN">+</button>
       <div className="notes_body">
         {errors ? (
           <div className="error-message text-red-500">{errors}</div>
@@ -146,12 +147,8 @@ export const Notes = () => {
                         resize: "none",
                       }}
                     />
-                    <button type="submit" className="submitBTN">
-                      ✔️
-                    </button>
-                    <button type="button" onClick={() => setAdd(false)} className="deletebtn">
-                      X
-                    </button>
+                    <button type="submit" className="submitBTN">✔️</button>
+                    <button type="button" onClick={() => setAdd(false)} className="deletebtn">X</button>
                   </form>
                 </div>
               </div>
@@ -164,7 +161,7 @@ export const Notes = () => {
                 </div>
               </div>
             ) : (
-              (newNotes && newNotes.length > 0 ? (
+              newNotes.length > 0 ? (
                 newNotes.filter((note) => !note.isDeleted).map((note, index) => (
                   <div
                     key={index}
@@ -206,21 +203,16 @@ export const Notes = () => {
                             color: isLight(note.color) ? "black" : "white",
                           }}
                         />
-                        <button type="submit" className="submitBTN">
-                          ✔️
-                        </button>
+                        <button type="submit" className="submitBTN">✔️</button>
                       </form>
                     ) : (
                       <>
+                        <button onClick={() => setPinnedNote(note)} className="pinbtn">📌</button>
                         <p style={{ fontWeight: "bold" }}>{note.title}</p>
                         <p className="note_date">{new Date(note.date).toLocaleString()}</p>
                         <p style={{ marginBottom: "10px" }}>{note.content}</p>
-                        <button onClick={() => handleDelete(note._id)} className="deletebtn">
-                          X
-                        </button>
-                        <button onClick={() => handleEdit(note._id)} className="editbtn">
-                          ✏️
-                        </button>
+                        <button onClick={() => handleDelete(note._id)} className="deletebtn">X</button>
+                        <button onClick={() => handleEdit(note._id)} className="editbtn">✏️</button>
                       </>
                     )}
                   </div>
@@ -229,7 +221,7 @@ export const Notes = () => {
                 <h1 className="text-lg text-pink-400">
                   No Notes Found, Create some with this big plus button on your left! Yey!
                 </h1>
-              ))
+              )
             )}
           </>
         )}
