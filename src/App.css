@@ -40,7 +40,7 @@ a.inline-flex.items-center img {
   display: inline-block;
   position: relative;
   min-width: 200px;
-  max-width: 400px;
+  width: 500px;
   height: auto;
   min-height: 150px; /* Minimum height */
   margin: 10px;
@@ -49,6 +49,13 @@ a.inline-flex.items-center img {
   background-color: #ffe922;
   background-image: linear-gradient(#d2d0d07e .1em, transparent .1em);
   background-size: 100% 1.2em;
+}
+
+@media screen and (max-width: 600px) {
+  .notes_note {
+    width:300px;
+  }
+  
 }
 
 .pinned_note_wrapper {
