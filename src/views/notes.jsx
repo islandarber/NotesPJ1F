@@ -1,31 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { HexColorPicker } from "react-colorful";
 import axios from "axios";
+import { useAuth } from "../Context/AuthContext";
 
 export const Notes = () => {
   const [color, setColor] = useState("#ffe922");
   const [newNotes, setNewNotes] = useState([]);
-  const [add, setAdd] = useState(false);
-  const [editingNote, setEditingNote] = useState({ title: "", content: "" });
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingNote, setEditingNote] = useState({ id: null, title: "", content: "" });
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState(null);
   const [pinnedNote, setPinnedNote] = useState(null);
+  const [noNotesMessageVisible, setNoNotesMessageVisible] = useState(true);
+  const api_url = import.meta.env.VITE_BACKEND_URL;
+
+  const { token } = useAuth();
+
+  const fetchNotes = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${api_url}/notes`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      setNewNotes(data);
+
+      // Hide the no notes message if there are notes
+      if (data.length > 0) {
+        setNoNotesMessageVisible(false);
+      }
+    } catch (error) {
+      setErrors("Failed to fetch notes. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
 
   useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/notes");
-        setNewNotes(response.data);
-      } catch (error) {
-        setErrors("Failed to fetch notes. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchNotes();
-  }, []);
+  }, [fetchNotes]);
 
-  const addbtn = () => setAdd(true);
+  const handleAddToggle = () => {
+    setIsAdding((prev) => {
+      if (!prev) setNoNotesMessageVisible(false); // Hide message when adding starts
+      return !prev;
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,11 +67,20 @@ export const Notes = () => {
     }
 
     const newNote = { title, content, color };
-    setAdd(false);
+    setIsAdding(false);
 
     try {
-      const response = await axios.post("http://localhost:3000/notes", newNote);
+      const response = await axios.post(`${api_url}/notes`, newNote, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
       setNewNotes((prevNotes) => [...prevNotes, response.data]);
+      e.target.reset(); // Reset form fields
+
+      // Hide the no notes message after adding a note
+      setNoNotesMessageVisible(false);
     } catch (error) {
       setErrors("Failed to add note. Please try again.");
     }
@@ -55,7 +88,11 @@ export const Notes = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/notes/soft/${id}`);
+      await axios.delete(`${api_url}/notes/soft/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
       setNewNotes((prevNotes) =>
         prevNotes.map((note) =>
           note._id === id ? { ...note, isDeleted: true } : note
@@ -75,18 +112,23 @@ export const Notes = () => {
     });
   };
 
-  const handleUpdateNote = async (id) => {
+  const handleUpdateNote = async () => {
     const updatedNote = {
       title: editingNote.title,
       content: editingNote.content,
     };
 
     try {
-      const response = await axios.put(`http://localhost:3000/notes/${id}`, updatedNote);
+      const response = await axios.put(`${api_url}/notes/${editingNote.id}`, updatedNote, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
       setNewNotes((prevNotes) =>
-        prevNotes.map((note) => (note._id === id ? response.data : note))
+        prevNotes.map((note) => (note._id === editingNote.id ? response.data : note))
       );
-      setEditingNote({ title: "", content: "" });
+      setEditingNote({ id: null, title: "", content: "" });
     } catch (error) {
       setErrors("Failed to update note. Please try again.");
     }
@@ -104,28 +146,28 @@ export const Notes = () => {
   return (
     <div>
       {pinnedNote && (
-          <div className="pinned_note_wrapper">
-            <div
-              className="notes_note"
-              style={{
-                background: pinnedNote.color,
-                color: isLight(pinnedNote.color) ? "black" : "white",
-                width: "300px",
-              }}
-            >
-              <button onClick={() => setPinnedNote(null)} className="pinbtn">📍</button>
-              <p style={{ fontWeight: "bold" }}>{pinnedNote.title}</p>
-              <p>{pinnedNote.content}</p>
-            </div>
+        <div className="pinned_note_wrapper">
+          <div
+            className="notes_note"
+            style={{
+              background: pinnedNote.color,
+              color: isLight(pinnedNote.color) ? "black" : "white",
+              width: "300px",
+            }}
+          >
+            <button onClick={() => setPinnedNote(null)} className="pinbtn">📍</button>
+            <p style={{ fontWeight: "bold" }}>{pinnedNote.title}</p>
+            <p>{pinnedNote.content}</p>
           </div>
-        )}
-      <button onClick={addbtn} className="addBTN">+</button>
+        </div>
+      )}
+      <button onClick={handleAddToggle} className="addBTN">+</button>
       <div className="notes_body">
         {errors ? (
           <div className="error-message text-red-500">{errors}</div>
         ) : (
           <>
-            {add && (
+            {isAdding && (
               <div className="container_notes">
                 <HexColorPicker color={color} onChange={setColor} className="colorpicker" />
                 <div className="notes_note" style={{ background: color }}>
@@ -136,6 +178,7 @@ export const Notes = () => {
                       placeholder="Enter your title here"
                       style={{ color: isLight(color) ? "black" : "white" }}
                       className="title"
+                      name="title"
                     />
                     <textarea
                       placeholder="Enter your note here"
@@ -146,9 +189,10 @@ export const Notes = () => {
                         boxSizing: "border-box",
                         resize: "none",
                       }}
+                      name="content"
                     />
                     <button type="submit" className="submitBTN">✔️</button>
-                    <button type="button" onClick={() => setAdd(false)} className="deletebtn">X</button>
+                    <button type="button" onClick={() => setIsAdding(false)} className="deletebtn">X</button>
                   </form>
                 </div>
               </div>
@@ -176,7 +220,7 @@ export const Notes = () => {
                         style={{ display: "flex", flexDirection: "column", gap: "8px" }}
                         onSubmit={(e) => {
                           e.preventDefault();
-                          handleUpdateNote(editingNote.id);
+                          handleUpdateNote();
                         }}
                       >
                         <input
@@ -218,9 +262,11 @@ export const Notes = () => {
                   </div>
                 ))
               ) : (
-                <h1 className="text-lg text-pink-400">
-                  No Notes Found, Create some with this big plus button on your left! Yey!
-                </h1>
+                noNotesMessageVisible && (
+                  <h1 className="text-lg text-pink-400">
+                    No Notes Found, Create some with this big plus button on your left! Yey!
+                  </h1>
+                )
               )
             )}
           </>

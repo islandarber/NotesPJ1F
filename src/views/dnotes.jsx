@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../Context/AuthContext";
 
 export const DNotes = () => {
   const [newdNotes, setNewdNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState(null);
+  const api_url = import.meta.env.VITE_BACKEND_URL;
+
+
+  const { token } = useAuth();
 
   useEffect(() => {
     const fetchedNotes = async () => {
-      setLoading(true); // Ensure loading state is true when fetching starts
-      setErrors(null);  // Clear previous errors
+      setLoading(true);
+      setErrors(null); 
       try {
-        const response = await axios.get("http://localhost:3000/notes/deleted");
+        const response = await axios.get(`${api_url}/notes/deleted`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        });
         setNewdNotes(response.data);
         console.log(response.data);
       } catch (error) {
@@ -21,11 +31,16 @@ export const DNotes = () => {
       }
     };
     fetchedNotes();
-  }, []);
+  }, [token]);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/notes/${id}`);
+      await axios.delete(`${api_url}/notes/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
       setNewdNotes(newdNotes.filter((note) => note._id !== id));
     } catch (error) {
       setErrors("Failed to delete note. Please try again.");
@@ -34,7 +49,12 @@ export const DNotes = () => {
 
   const handleRestore = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/notes/${id}`, { isDeleted: false });
+      await axios.put(`${api_url}/notes/${id}`, { isDeleted: false }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
       setNewdNotes(newdNotes.filter((note) => note._id !== id));
     } catch (error) {
       setErrors("Failed to restore note. Please try again.");

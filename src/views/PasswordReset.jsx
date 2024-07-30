@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
-import 'react-toastify/dist/ReactToastify.css';
 
 export const ResetPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState(null);
+  const api_url = import.meta.env.VITE_BACKEND_URL;
 
   // Toast notification functions
   const notifySuccess = (message) => toast.success(
@@ -29,10 +28,10 @@ export const ResetPassword = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/users/reset-password', { email });
-      console.log(response.data); // Check the response
+      const response = await axios.post(`${api_url}/users/reset-password`, { email });
+      console.log(response.data); 
       notifySuccess('Password reset email sent!');
-      setEmail(''); // Clear the email input after successful submission
+      setEmail(''); 
     } catch (error) {
       if (error.response) {
         notifyError(error.message || 'Something went wrong. Please try again.');

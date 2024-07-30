@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [showAll, setShowAll] = useState(true);
 
-
   const login = async (formData, setLoading, setError) => {
     setLoading(true);
     setShowAll(true);
@@ -28,9 +27,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("jwt", token);
       setToken(token);
       setUser(user);
-      setTimeout(() => {
-        navigate("/notes");
-      }, 3000);
+      navigate("/notes");
     } catch (error) {
       setError(error.response.data.message);
       setTimeout(() => {
@@ -45,9 +42,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("jwt");
     setToken(null);
     setUser(null);
-    setTimeout(() => {
-      navigate("/login");
-    }, 3000);
+    navigate("/login");
   };
 
   useEffect(() => {

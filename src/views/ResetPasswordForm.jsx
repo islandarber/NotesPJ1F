@@ -5,13 +5,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const ResetPasswordForm = () => {
-  const { token } = useParams(); // Get reset token from URL params
+  const { token } = useParams();
   const navigate = useNavigate();
   console.log(token);
   
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const api_url = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,10 +22,10 @@ export const ResetPasswordForm = () => {
     }
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/users/reset-password/confirm', { token, password });
+      const response = await axios.post(`${api_url}/users/reset-password/confirm`, { token, password });
       toast.success(response.data.message);
       setTimeout(() => {
-        navigate('/login'); // Redirect to login page after successful reset
+        navigate('/login'); 
       }, 3000);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Error resetting password');

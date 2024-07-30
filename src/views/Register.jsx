@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const Register = () => {
   const navigate = useNavigate();
+  const api_url = import.meta.env.VITE_BACKEND_URL;
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -13,8 +14,10 @@ export const Register = () => {
     confirmPassword: '',
   });
 
-  const [passwordStrength, setPasswordStrength] = useState(0); // Strength level from 0 to 4
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [error, setError] = useState(null);
+
+  const [passwordStrength, setPasswordStrength] = useState(0); 
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,35 +27,41 @@ export const Register = () => {
   };
 
   const handleRegister = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault(); 
 
     if (formData.password !== formData.confirmPassword) {
-      notifyError('Passwords do not match');
+      setError('Passwords do not match');
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
       return;
     }
     if (formData.username === '' || formData.email === '' || formData.password === '' || formData.confirmPassword === '') {
-      notifyError('Please fill in all the required fields');
+      setError('Please fill in all the required fields');
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/users/register', {
+      const response = await axios.post(`${api_url}/users/register`, {
         username: formData.username,
         email: formData.email,
         password: formData.password
       });
 
-      console.log(response); // Check the response
+      console.log(response);
       notifySuccess('Registration successful!');
       setTimeout(() => {
-        navigate('/login'); // Redirect after 3 seconds
+        navigate('/login'); 
       }, 3000);
 
     } catch (error) {
       if (error.response) {
-        notifyError(error.response.data.message || 'Something went wrong. Please try again.');
+        setError(error.response.data.message || 'Something went wrong. Please try again.');
       } else {
-        notifyError('Something went wrong. Please try again later.');
+        setError('Something went wrong. Please try again later.');
       }
     }
   };
@@ -92,11 +101,6 @@ export const Register = () => {
     </div>
   );
 
-  const notifyError = (message) => toast.error(
-    <div className="flex items-center">
-      <span>{message}</span>
-    </div>
-  );
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -108,6 +112,11 @@ export const Register = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Create an Account</h2>
         <form onSubmit={handleRegister}>
+        {error && (
+            <div className="bg-red-500 text-white p-2 rounded mb-4">
+              {error}
+            </div>
+          )}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
               Username
