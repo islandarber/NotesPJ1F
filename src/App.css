@@ -39,7 +39,8 @@ a.inline-flex.items-center img {
 .notes_note {
   display: inline-block;
   position: relative;
-  width: 200px;
+  min-width: 200px;
+  max-width: 400px;
   height: auto;
   min-height: 150px; /* Minimum height */
   margin: 10px;
