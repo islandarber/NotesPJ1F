@@ -37,7 +37,8 @@ a.inline-flex.items-center img {
 }
 
 .notes_note {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   position: relative;
   min-width: 200px;
   width: 400px;

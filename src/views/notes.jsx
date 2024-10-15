@@ -173,7 +173,6 @@ export const Notes = () => {
                 <div className="notes_note" style={{ background: color }}>
                   <form onSubmit={handleSubmit}>
                     <input
-                      autoFocus
                       type="text"
                       placeholder="Title"
                       style={{ color: isLight(color) ? "black" : "white" }}
@@ -181,10 +180,12 @@ export const Notes = () => {
                       name="title"
                     />
                     <textarea
+                      autoFocus
                       placeholder="Enter your note here"
                       style={{
                         color: isLight(color) ? "black" : "white",
                         width: "100%",
+                        height: "100%",
                         padding: "8px",
                         boxSizing: "border-box",
                         resize: "none",
