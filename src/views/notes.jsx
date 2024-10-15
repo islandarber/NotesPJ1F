@@ -93,13 +93,17 @@ export const Notes = () => {
           'Authorization': `Bearer ${token}`,
         }
       });
-      setNewNotes((prevNotes) =>
-        prevNotes.map((note) =>
-          note._id === id ? { ...note, isDeleted: true } : note
-        )
-      );
+      setNewNotes((prevNotes) => {
+        const updatedNotes = prevNotes.filter((note) => note._id !== id);
+        // Check if there are any notes left after deletion
+        if (updatedNotes.length === 0) {
+          setNoNotesMessageVisible(true); // Show message if no notes left
+        }
+        return updatedNotes;
+      });
+
     } catch (error) {
-      setErrors("Failed to delete note. Please try again.");
+      setErrors("Failed to archive note. Please try again.");
     }
   };
 

@@ -53,6 +53,7 @@ export const Login = () => {
               Email
             </label>
             <input
+              autoFocus
               type="email"
               name="email"
               onChange={handleChange}
