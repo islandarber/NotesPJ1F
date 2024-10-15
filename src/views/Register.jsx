@@ -15,6 +15,7 @@ export const Register = () => {
   });
 
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [passwordStrength, setPasswordStrength] = useState(0); 
   const [showPassword, setShowPassword] = useState(false);
@@ -45,6 +46,7 @@ export const Register = () => {
     }
 
     try {
+      setLoading(true);
       const response = await axios.post(`${api_url}/users/register`, {
         username: formData.username,
         email: formData.email,
@@ -63,6 +65,8 @@ export const Register = () => {
       } else {
         setError('Something went wrong. Please try again later.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -191,7 +195,7 @@ export const Register = () => {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
             <a
               href="#"

@@ -65,7 +65,7 @@ export const DNotes = () => {
     <div>
       <div className="notes_body">
         {loading ? (
-          <div className="flex justify-center h-screen">
+          <div className="flex justify-center h-screen mt-24">
             <div className="relative w-16 h-16">
               <div className="absolute w-16 h-16 border-4 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
               <div className="absolute w-16 h-16 border-4 border-t-4 border-gray-300 border-solid rounded-full border-t-transparent animate-spin"></div>
@@ -96,7 +96,9 @@ export const DNotes = () => {
             </div>
           ))
         ) : (
-          <h1 className="mt-10 text-lg text-pink-400">No Deleted Notes Found.</h1>
+          <h1 className="text-lg text-gray-500 font-semibold mt-24 animate-fade-in">
+           No archived notes.
+        </h1>
         )}
       </div>
     </div>

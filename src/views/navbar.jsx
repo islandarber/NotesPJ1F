@@ -9,14 +9,14 @@ export const Navbar = () => {
   return (
     <nav className="bg-gradient-to-r from-blue-100 to-blue-200">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <p className="text-lg font-bold">
+        <p className="text-xl font-bold">
           Welcome {user ? user.username : 'User'}
         </p>
         <div className="hidden md:flex space-x-4">
           <NavLink
             to="/notes"
             className={({ isActive }) => 
-              isActive ? "block py-2 text-blue-500 activeLink" : "block py-2 px-2 rounded-lg hover:underline decoration-1"
+              isActive ? "block text-lg py-2 text-blue-500 activeLink" : "block text-lg py-2 px-2 rounded-lg hover:underline decoration-1"
             }
           >
             Current Notes
@@ -24,14 +24,14 @@ export const Navbar = () => {
           <NavLink
             to="/deleted"
             className={({ isActive }) => 
-              isActive ? "block py-2 text-blue-500 activeLink" : "block py-2 px-2 rounded-lg hover:underline decoration-1"
+              isActive ? "block text-lg py-2 text-blue-500 activeLink" : "block text-lg py-2 px-2 rounded-lg hover:underline decoration-1"
             }
           >
-            Deleted Notes
+            Archived Notes
           </NavLink>
           <button
             onClick={() => logout()}
-            className="block py-2 px-2 rounded-lg hover:underline decoration-1"
+            className="block py-2 px-2 text-lg rounded-lg hover:underline decoration-1"
           >
             Logout
           </button>
@@ -78,7 +78,7 @@ export const Navbar = () => {
             }
             onClick={() => setIsOpen(false)}
           >
-            Deleted Notes
+            Archived Notes
           </NavLink>
           <button
             onClick={() => logout()}

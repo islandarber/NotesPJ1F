@@ -56,8 +56,8 @@ export const Notes = () => {
     const title = e.target[0].value;
     const content = e.target[1].value;
 
-    if (!title || !content) {
-      alert("Please enter a title and a note!");
+    if (!content) {
+      alert("Please enter a note content");
       return;
     }
 
@@ -175,7 +175,7 @@ export const Notes = () => {
                     <input
                       autoFocus
                       type="text"
-                      placeholder="Enter your title here"
+                      placeholder="Title"
                       style={{ color: isLight(color) ? "black" : "white" }}
                       className="title"
                       name="title"
@@ -251,11 +251,11 @@ export const Notes = () => {
                       </form>
                     ) : (
                       <>
-                        <button onClick={() => setPinnedNote(note)} className="pinbtn">📌</button>
+                        <button onClick={() => setPinnedNote(note)} className="pinbtn" title="Pin me">📌</button>
                         <p style={{ fontWeight: "bold" }}>{note.title}</p>
                         <p className="note_date">{new Date(note.date).toLocaleString()}</p>
-                        <p style={{ marginBottom: "10px" }}>{note.content}</p>
-                        <button onClick={() => handleDelete(note._id)} className="deletebtn">X</button>
+                        <p className="text-lg" style={{ marginBottom: "10px" }}>{note.content}</p>
+                        <button onClick={() => handleDelete(note._id)} className="deletebtn" title="Archive">📁</button>
                         <button onClick={() => handleEdit(note._id)} className="editbtn">✏️</button>
                       </>
                     )}
@@ -263,8 +263,8 @@ export const Notes = () => {
                 ))
               ) : (
                 noNotesMessageVisible && (
-                  <h1 className="text-lg text-pink-400">
-                    No Notes Found, Create some with this big plus button on your left! Yey!
+                  <h1 className="text-lg text-gray-500 font-semibold mt-4 animate-fade-in">
+                    No notes available. Press the + button to create your first one.
                   </h1>
                 )
               )
