@@ -8,6 +8,7 @@ import { Footer } from './views/Footer'
 import { Navigate } from 'react-router-dom'
 import { ResetPassword } from './views/PasswordReset'
 import {ResetPasswordForm} from './views/ResetPasswordForm'
+import { Home } from './views/Home'
 
 function App() {
 
@@ -19,7 +20,7 @@ function App() {
       <div className='main-content'>
         <Routes>
           {/* Handle root "/" path based on user login status */}
-          <Route path="/" element={token ? <Navigate to="/notes" /> : <HomePage />} />
+          <Route path="/" element={token ? <Navigate to="/notes" /> : <Home />} />
           
           {/* Public routes, accessible when user is NOT logged in */}
           {publicRoutes.map(({path, element}) => (

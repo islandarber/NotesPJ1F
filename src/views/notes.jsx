@@ -122,6 +122,11 @@ export const Notes = () => {
       content: editingNote.content,
     };
 
+    if (!updatedNote.content) {
+      alert("Please enter a note content");
+      return;
+    }
+
     try {
       const response = await axios.put(`${api_url}/notes/${editingNote.id}`, updatedNote, {
         headers: {
@@ -229,7 +234,6 @@ export const Notes = () => {
                         }}
                       >
                         <input
-                          autoFocus
                           type="text"
                           value={editingNote.title}
                           onChange={(e) => setEditingNote({ ...editingNote, title: e.target.value })}
@@ -242,6 +246,7 @@ export const Notes = () => {
                           }}
                         />
                         <textarea
+                          autoFocus
                           value={editingNote.content}
                           onChange={(e) => setEditingNote({ ...editingNote, content: e.target.value })}
                           style={{

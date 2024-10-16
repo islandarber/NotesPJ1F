@@ -37,8 +37,7 @@ a.inline-flex.items-center img {
 }
 
 .notes_note {
-  display: flex;
-  flex-direction: column;
+  display: block;
   position: relative;
   min-width: 200px;
   width: 400px;
@@ -125,6 +124,11 @@ a.inline-flex.items-center img {
   background-color: transparent;
   font-size: 0.7em;
 }
+
+textarea {
+  min-height: 200px ;
+}
+
 
 .title {
   font-size: 0.8em !important;
