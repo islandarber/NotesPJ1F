@@ -18,16 +18,26 @@ function App() {
      {token ? <Navbar/> : null}
       <div className='main-content'>
         <Routes>
+          {/* Handle root "/" path based on user login status */}
+          <Route path="/" element={token ? <Navigate to="/notes" /> : <HomePage />} />
+          
+          {/* Public routes, accessible when user is NOT logged in */}
           {publicRoutes.map(({path, element}) => (
             <Route key={path} path={path} element={!token ? element : <Navigate to='/'/>} />))
           }
+
+          {/* Private routes, accessible when user is logged in */}
           {privateRoutes.map(({path, element}) => (
             <Route key={path} path={path} element={token ? element : <Navigate to='/login'/>} />))
           }
+
+          {/* Other Routes */}
           <Route path="/not-found" element={<Notfound />} />
-          <Route path="*" element={<Navigate to="/not-found" replace/>} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/reset/:token" element={<ResetPasswordForm />} />
+
+          {/* Catch-all route for 404 */}
+          <Route path="*" element={<Navigate to="/not-found" replace />} />
         </Routes>
       </div>
       <Footer/>
